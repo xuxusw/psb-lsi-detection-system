@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; padding: 40px; }
+
+  .diagram { display: flex; align-items: center; gap: 0; width: 100%; }
+
+  /* колонки */
+  .col { display: flex; flex-direction: column; gap: 10px; }
+
+  /* стрелка между колонками */
+  .arrow {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 18px; color: #94A3B8; font-size: 28px; flex-shrink: 0;
+  }
+
+  /* заголовок колонки */
+  .col-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    color: #94A3B8; text-align: center; margin-bottom: 4px;
+  }
+
+  /* карточка источника */
+  .src {
+    background: #F8FAFF; border: 1.5px solid #C7D7F5; border-radius: 10px;
+    padding: 10px 16px; font-size: 13px; color: #1E3A6E; font-weight: 500;
+    text-align: center; white-space: nowrap;
+  }
+
+  /* карточка модуля */
+  .mod {
+    border-radius: 10px; padding: 10px 14px; font-size: 13px;
+    font-weight: 600; text-align: center; white-space: nowrap;
+  }
+  .m1 { background: #E8F5F1; border: 1.5px solid #1D9E75; color: #0E5C43; }
+  .m2 { background: #FEF3E2; border: 1.5px solid #E09B30; color: #7A4E0D; }
+  .m3 { background: #EEF2FF; border: 1.5px solid #6366F1; color: #3730A3; }
+  .m4 { background: #FFF0F0; border: 1.5px solid #E24B4A; color: #9B1C1C; }
+  .m5 { background: #F3F0FF; border: 1.5px solid #7F77DD; color: #4C1D95; }
+
+  /* блок обработки */
+  .proc {
+    background: #1E3A6E; border-radius: 12px; padding: 14px 20px;
+    color: #fff; text-align: center;
+  }
+  .proc .title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .proc .sub { font-size: 11px; color: #93C5FD; }
+
+  /* LSI блок */
+  .lsi-box {
+    background: linear-gradient(135deg, #1E3A6E, #2D5BA3);
+    border-radius: 14px; padding: 18px 22px; color: #fff; text-align: center;
+    min-width: 150px;
+  }
+  .lsi-box .big { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+  .lsi-box .sub { font-size: 11px; color: #93C5FD; margin-top: 4px; }
+  .lsi-zones { display: flex; gap: 4px; justify-content: center; margin-top: 10px; }
+  .zone {
+    border-radius: 4px; padding: 3px 8px; font-size: 10px; font-weight: 600;
+  }
+  .z1 { background: rgba(29,158,117,0.3); color: #6EE7B7; }
+  .z2 { background: rgba(224,155,48,0.3); color: #FCD34D; }
+  .z3 { background: rgba(226,75,74,0.3); color: #FCA5A5; }
+
+  /* кэш */
+  .cache-box {
+    background: #F0FDF4; border: 1.5px solid #22C55E; border-radius: 10px;
+    padding: 10px 16px; font-size: 12px; color: #14532D; text-align: center;
+  }
+  .cache-box .ctitle { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  .cache-box .csub { font-size: 10px; color: #4ADE80; }
+
+  /* дашборд */
+  .dash {
+    border: 2px solid #E2E8F0; border-radius: 14px; overflow: hidden;
+    min-width: 180px;
+  }
+  .dash-header {
+    background: #1E3A6E; color: #fff; font-size: 11px; font-weight: 700;
+    padding: 8px 14px; letter-spacing: 0.5px;
+  }
+  .dash-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-bottom: 1px solid #F1F5F9;
+    font-size: 12px; color: #374151;
+  }
+  .dash-item:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  .small-arrow { font-size: 20px; color: #94A3B8; }
+</style>
+</head>
+<body>
+
+<div class="diagram">
+
+  <!-- ИСТОЧНИКИ ДАННЫХ -->
+  <div class="col">
+    <div class="col-title">Источники данных</div>
+    <div class="src">ЦБ РФ · cbr.ru<br><span style="font-size:10px;color:#94A3B8">bliquidity, RUONIA, репо, SORS</span></div>
+    <div class="src">Минфин · minfin.gov.ru<br><span style="font-size:10px;color:#94A3B8">Excel-файлы аукционов ОФЗ</span></div>
+    <div class="src">Росказна · roskazna.gov.ru<br><span style="font-size:10px;color:#94A3B8">XML-файлы аукционов ЕКС</span></div>
+    <div class="src">ФНС · nalog.gov.ru<br><span style="font-size:10px;color:#94A3B8">налоговый календарь</span></div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- ОБРАБОТКА -->
+  <div class="col">
+    <div class="col-title">Обработка</div>
+    <div class="proc">
+      <div class="title">data_fetcher.py</div>
+      <div class="sub">Загрузка и парсинг</div>
+    </div>
+    <div style="text-align:center; color:#94A3B8; font-size:20px;">↓</div>
+    <div class="cache-box">
+      <div class="ctitle">cache.py</div>
+      <div style="font-size:10px;color:#166534">SQLite · data_cache.db</div>
+      <div style="font-size:10px;color:#166534;margin-top:2px">инкрементальное обновление</div>
+    </div>
+    <div style="text-align:center; color:#94A3B8; font-size:20px;">↓</div>
+    <div class="proc">
+      <div class="title">signal_engine.py</div>
+      <div class="sub">MAD-нормализация · GBM</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- МОДУЛИ -->
+  <div class="col">
+    <div class="col-title">Модули</div>
+    <div class="mod m1">М1 · Резервы</div>
+    <div class="mod m2">М2 · Репо ЦБ</div>
+    <div class="mod m3">М3 · ОФЗ</div>
+    <div class="mod m4">М4 · Сезонность</div>
+    <div class="mod m5">М5 · Казначейство</div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- LSI -->
+  <div class="col">
+    <div class="col-title">Агрегация</div>
+    <div class="lsi-box">
+      <div class="big">LSI</div>
+      <div class="sub">Gradient Boosting · × Seasonal_Factor</div>
+      <div class="lsi-zones">
+        <div class="zone z1">0–40</div>
+        <div class="zone z2">40–70</div>
+        <div class="zone z3">70–100</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- ДАШБОРД -->
+  <div class="col">
+    <div class="col-title">Интерфейс (Dash)</div>
+    <div class="dash">
+      <div class="dash-header">Система мониторинга ликвидности</div>
+      <div class="dash-item"><div class="dot" style="background:#1D9E75"></div>Обзор / Gauge</div>
+      <div class="dash-item"><div class="dot" style="background:#6366F1"></div>Модули M1–M5</div>
+      <div class="dash-item"><div class="dot" style="background:#E09B30"></div>Бэктест</div>
+      <div class="dash-item"><div class="dot" style="background:#2D5BA3"></div>Цифровой помощник</div>
+    </div>
+    <div style="margin-top:8px; border:1.5px solid #E2E8F0; border-radius:10px; padding:10px 14px; font-size:12px; color:#374151; text-align:center;">
+      Groq API<br><span style="color:#94A3B8; font-size:10px;">llama-3.3-70b</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+.env
+data_cache.db
+.cache_checked
+data/
+__pycache__/
+*.pyc
+*.pyo
+.idea/
+.vscode/
